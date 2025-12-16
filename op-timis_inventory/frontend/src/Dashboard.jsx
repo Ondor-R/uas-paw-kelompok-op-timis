@@ -56,6 +56,7 @@ function Dashboard() {
 
   return (
     <div>
+      {/* Navbar */}
       <div className="dashboard-header">
         <h3 style={{ margin: 0 }}>Op-timis' Inventory</h3>
         <div className="header-user">
@@ -64,20 +65,25 @@ function Dashboard() {
         </div>
       </div>
 
+      {/* Konten Utama */}
       <div className="page-container">
         <h2>Status</h2>
         
+        {/* STATISTIK */}
         <div className="stat-grid">
+          {/* total produk */}
           <div className="stat-card bg-color-1">
             <span className="stat-label">Total Produk</span>
             <span className="stat-value">{stats.totalProducts}</span>
           </div>
 
+          {/* suppliers */}
           <div className="stat-card bg-color-4">
             <span className="stat-label">Mitra Supplier</span>
             <span className="stat-value">{stats.totalSuppliers}</span>
           </div>
 
+          {/* low stok alert */}
           <div className={`stat-card ${stats.lowStock > 0 ? 'bg-danger' : 'bg-color-2'}`}>
             <span className="stat-label">Low Stock (ALERT)</span>
             <span className="stat-value">
@@ -86,6 +92,7 @@ function Dashboard() {
             {stats.lowStock > 0 && <small>Perlu re-stock segera!</small>}
           </div>
 
+          {/* total aset */}
           <div className="stat-card bg-color-3">
             <span className="stat-label">Total Asset</span>
             <span className="stat-value" style={{fontSize: '24px'}}>
@@ -94,6 +101,7 @@ function Dashboard() {
           </div>
         </div>
 
+        {/* MENU NAVIGASI */}
         <h3 style={{ marginTop: '40px', borderBottom: '2px solid #ddd', paddingBottom: '10px' }}>Menu</h3>
         <div className="quick-menu-grid">
               
