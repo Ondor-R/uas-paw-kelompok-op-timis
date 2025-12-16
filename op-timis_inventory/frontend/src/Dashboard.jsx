@@ -101,7 +101,7 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* MENU NAVIGASI */}
+        {/* MENU NAVIGASI CEPAT */}
         <h3 style={{ marginTop: '40px', borderBottom: '2px solid #ddd', paddingBottom: '10px' }}>Menu</h3>
         <div className="quick-menu-grid">
               

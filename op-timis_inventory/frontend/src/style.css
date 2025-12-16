@@ -1,14 +1,95 @@
 :root {
-    --main-button-color: #ff7300;
+    --template1-color: #58545F; /* was --primary-color */
+    --template2-color: #A97882; /* was --success-color */
+    --template3-color: #DC8E90; /* was --danger-color */
+    --template4-color: #FDAC98; /* was --warning-color */
+    --template5-color: #FFC5A6;  /* was --info-color */
+    --danger-color: #dc3545;
+    --light-gray: #f8f9fa;
     --rehans-black: #141414;
 }
 
+/* Helper classes for colors */
+.bg-color-1 { background-color: var(--template1-color); } /*bg-blue*/
+.bg-color-2 { background-color: var(--template2-color); } /*bg-green*/
+.bg-danger { background-color: var(--danger-color); } /*bg-red*/
+.bg-color-3 { background-color: var(--template3-color); } /*bg-orange*/
+.bg-color-4 { background-color: var(--template4-color);} /*bg-yellow*/
+.bg-color-5 { background-color: var(--template5-color); } /*bg-purple*/
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f0f2f5;
+    color: #333;
 }
 
+.page-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.btn-back {
+    background: transparent;
+    border: 1px solid #ccc;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    transition: 0.2s;
+}
+
+.btn-back:hover {
+    background: #e2e6ea;
+}
+
+.btn-action {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-action:active {
+    transform: translateY(1px);
+}
+
+.alert-msg {
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* --- TABLE STYLES --- */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.data-table th, .data-table td {
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
+    text-align: left;
+}
+
+.data-table th {
+    background-color: #f1f3f5;
+    font-weight: 600;
+}
+
+.data-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* --- LOGIN PAGE --- */
 .login-container {
     display: flex;
     justify-content: center;
@@ -52,7 +133,7 @@ body {
 .btn-login {
     width: 100%;
     padding: 10px;
-    background-color: var(--main-button-color);
+    background-color: var(--template2-color);
     color: white;
     border: none;
     border-radius: 4px;
@@ -61,16 +142,120 @@ body {
     margin-top: 10px;
 }
 
-.btn-login:hover {
-    background-color: #b33900;
+.btn-login:hover {opacity: 0.9;}
+.toggle-text { text-align: center; margin-top: 15px; font-size: 14px; color: #666; }
+.toggle-link { color: var(--template2-color); font-weight: bold; cursor: pointer; text-decoration: underline; }
+.toggle-link:hover {opacity: 0.5;}
+.error-message { color: red; text-align: center; margin-bottom: 10px; }
+
+/* --- DASHBOARD PAGE --- */
+.dashboard-header {
+    background: var(--template1-color);
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.btn-login:active {
-    background-color: #ff4500;
+.header-user { display: flex; align-items: center; gap: 20px; }
+.btn-logout { background: var(--danger-color); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
 }
 
-.error-message {
-    color: red;
+.stat-card {
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.stat-label { font-size: 14px; opacity: 0.9; }
+.stat-value { font-size: 32px; font-weight: bold; margin-top: 5px; }
+
+/* Menu Dashboard */
+.quick-menu-grid {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.menu-btn {
+    padding: 15px 25px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    flex: 1;
+    min-width: 150px;
+    transition: 0.3s;
+    font-weight: bold;
     text-align: center;
-    margin-bottom: 10px;
 }
+.menu-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+/* --- PRODUCTS & SUPPLIERS FORMS --- */
+.form-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+}
+
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-grid-full { grid-column: span 2; }
+
+/* --- TRANSACTIONS --- */
+.transaction-form {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.trans-group { flex: 1; min-width: 150px; }
+.trans-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+.trans-input, .trans-select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+
+/* --- MANAGE STAFF --- */
+.badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; border: 1px solid; }
+.badge-active { color: var(--success-color); border-color: var(--success-color); background: #e8f5e9; }
+.badge-pending { color: #856404; border-color: #856404; background: #fff3cd; }
+.staff-actions { display: flex; gap: 8px; }
+
+/* --- REPORTS --- */
+.report-summary-container { display: flex; gap: 20px; margin-bottom: 30px; }
+.summary-box { flex: 1; padding: 20px; border-radius: 8px; text-align: center; }
+.summary-box.green { background: #58545F; color: #ffffff; }
+.summary-box.blue { background: #A97882; color: #ffffff; }
+.summary-box h1 { margin: 10px 0 0 0; }
+
+.tab-nav { display: flex; gap: 5px; margin-bottom: 0; }
+.tab-btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background: #ddd;
+    border-radius: 5px 5px 0 0;
+    font-weight: bold;
+}
+.tab-btn.active { background: var(--template1-color); color: white; }
+.tab-content { border: 1px solid #ccc; padding: 20px; background: white; border-radius: 0 5px 5px 5px; }
+.tab-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
