@@ -105,6 +105,36 @@ def get_products(request):
         request.response.status = 500
         return {'message': str(e)}
 
+#-----------------------------------------------FITUR PRODUK: Create
+@view_config(route_name='products', renderer='json', request_method='POST')
+def create_product(request):
+    try:
+        payload = request.json_body
+        session = Session()
+        
+        if session.query(Product).filter_by(sku=payload['sku']).first():
+            session.close()
+            request.response.status = 400
+            return {'message': 'Kode SKU sudah ada!'}
+
+        new_product = Product(
+            name=payload['name'],
+            sku=payload['sku'],
+            category=payload['category'],
+            price=float(payload['price']),
+            stock=int(payload['stock']),
+            min_stock=int(payload['min_stock'])
+        )
+        
+        session.add(new_product)
+        session.commit()
+        session.close()
+        
+        return {'message': 'Produk berhasil disimpan!'}
+    except Exception as e:
+        request.response.status = 500
+        return {'message': str(e)}
+
 #-----------------------------------------------MAIN SERVER
 if __name__ == '__main__':
     with Configurator() as config:
