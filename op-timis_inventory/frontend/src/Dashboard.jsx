@@ -102,7 +102,21 @@ function Dashboard() {
                         Rp {stats.totalAsset.toLocaleString('id-ID')}
                         </span>
                     </div>
-                </div>  
+
+                    <h3 style={{ marginTop: '40px', borderBottom: '2px solid #ddd', paddingBottom: '10px' }}>Menu</h3>
+                    <div className="quick-menu-grid">
+                        <button onClick={() => navigate('/products')} className="menu-btn bg-color-1">Manage Products</button>
+                        <button onClick={() => navigate('/transactions')} className="menu-btn bg-color-2">Transactions</button>
+                        
+                        {user.role === 'admin' && (
+                            <>
+                            <button onClick={() => navigate('/suppliers')} className="menu-btn bg-color-3">Suppliers</button>
+                            <button onClick={() => navigate('/reports')} className="menu-btn bg-color-4">Reports</button>
+                            <button onClick={() => navigate('/manage-staff')} className="menu-btn bg-color-5">Manage Staff</button>
+                            </>
+                        )}
+                    </div>
+                </div>  
             </div>
         </div>
     );
