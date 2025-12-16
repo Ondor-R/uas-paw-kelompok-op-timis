@@ -5,7 +5,7 @@ from pyramid.view import view_config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import bcrypt
-from models import User, Base
+from models import User, Base, Product
 
 # --- DATABASE SETUP ---
 DATABASE_URL = "postgresql://postgres:18oktober@localhost/d5_db"
@@ -25,8 +25,6 @@ def add_cors_headers_response_callback(event):
     event.request.add_response_callback(cors_headers)
 
 # --- VIEW KHUSUS OPTIONS (PREFLIGHT) ---
-# Ini penting! Browser "bertanya dulu" (OPTIONS) sebelum kirim data (POST).
-# Kita harus jawab "OK" untuk semua pertanyaan ini.
 @view_config(route_name='register', request_method='OPTIONS')
 @view_config(route_name='login', request_method='OPTIONS')
 def options_view(request):
@@ -82,6 +80,30 @@ def login(request):
     except Exception as e:
         request.response.status = 500
         return {'message': f'Error: {str(e)}'}
+        
+#-----------------------------------------------FITUR PRODUK: Read
+@view_config(route_name='products', renderer='json', request_method='GET')
+def get_products(request):
+    try:
+        session = Session()
+        products = session.query(Product).order_by(desc(Product.id)).all()
+        data = []
+        for p in products:
+            data.append({
+                'id': p.id,
+                'name': p.name,
+                'sku': p.sku,
+                'category': p.category,
+                'price': p.price,
+                'stock': p.stock,
+                'min_stock': p.min_stock
+            })
+        
+        session.close()
+        return data
+    except Exception as e:
+        request.response.status = 500
+        return {'message': str(e)}
 
 #-----------------------------------------------MAIN SERVER
 if __name__ == '__main__':
