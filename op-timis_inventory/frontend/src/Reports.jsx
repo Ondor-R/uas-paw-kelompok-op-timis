@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './style.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./style.css";
 
 function Reports() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
-  const [activeTab, setActiveTab] = useState('stock');
+  const [activeTab, setActiveTab] = useState("stock");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     fetchAllData();
@@ -17,9 +18,9 @@ function Reports() {
   const fetchAllData = async () => {
     try {
       const [resProd, resTrans, resSupp] = await Promise.all([
-        axios.get('http://localhost:6543/products'),
-        axios.get('http://localhost:6543/transactions'),
-        axios.get('http://localhost:6543/suppliers')
+        axios.get("http://localhost:6543/products"),
+        axios.get("http://localhost:6543/transactions"),
+        axios.get("http://localhost:6543/suppliers"),
       ]);
 
       setProducts(resProd.data);
@@ -31,15 +32,25 @@ function Reports() {
   };
 
   const totalItems = products.reduce((acc, curr) => acc + curr.stock, 0);
-  const totalAssetValue = products.reduce((acc, curr) => acc + (curr.stock * curr.price), 0);
+  const totalAssetValue = products.reduce(
+    (acc, curr) => acc + curr.stock * curr.price,
+    0
+  );
 
   const downloadCSV = (data, filename) => {
     if (data.length === 0) {
-        alert("Data kosong, tidak ada yang bisa didownload.");
-        return;
+      setMessage("❌ Data kosong, tidak ada yang bisa didownload.");
+      setTimeout(() => setMessage(""), 3000);
+      return;
     }
     const headers = Object.keys(data[0]).join(",");
-    const rows = data.map(obj => Object.values(obj).map(val => `"${val}"`).join(",")).join("\n");
+    const rows = data
+      .map((obj) =>
+        Object.values(obj)
+          .map((val) => `"${val}"`)
+          .join(",")
+      )
+      .join("\n");
     const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + rows;
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -48,111 +59,346 @@ function Reports() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    setMessage(`✅ File ${filename} berhasil didownload!`);
+    setTimeout(() => setMessage(""), 3000);
   };
 
   return (
-    <div className="page-container">
-      <button onClick={() => navigate('/dashboard')} className="btn-back">&larr; Dashboard</button>
-      <h2>Laporan Sistem (Reports)</h2>
+    <div className="products-page">
+      {/* Header Section */}
+      <div className="products-header">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="btn-back-modern"
+        >
+          <span>←</span> Kembali
+        </button>
+        <h1 className="products-title">Laporan Sistem</h1>
+        <div style={{ width: "160px" }}></div> {/* Spacer for alignment */}
+      </div>
+
+      {/* Alert Message */}
+      {message && (
+        <div
+          className={`alert-modern ${
+            message.includes("✅") ? "alert-success" : "alert-error"
+          }`}
+        >
+          {message}
+        </div>
+      )}
 
       {/* RINGKASAN KEUANGAN */}
-      <div className="report-summary-container">
-        <div className="summary-box green">
-            <h3>Total Stok Barang</h3>
-            <h1>{totalItems} Unit</h1>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "20px",
+          marginBottom: "30px",
+        }}
+      >
+        <div
+          className="product-form-card"
+          style={{
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            color: "white",
+            textAlign: "center",
+          }}
+        >
+          <h3
+            style={{
+              margin: "0 0 10px 0",
+              fontSize: "16px",
+              fontWeight: "normal",
+              opacity: 0.9,
+            }}
+          >
+            Total Stok Barang
+          </h3>
+          <h1 style={{ margin: 0, fontSize: "42px", fontWeight: "bold" }}>
+            {totalItems} <span style={{ fontSize: "20px" }}>Unit</span>
+          </h1>
         </div>
-        <div className="summary-box blue">
-            <h3>Estimasi Nilai Aset</h3>
-            <h1>Rp {totalAssetValue.toLocaleString()}</h1>
+        <div
+          className="product-form-card"
+          style={{
+            background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+            color: "white",
+            textAlign: "center",
+          }}
+        >
+          <h3
+            style={{
+              margin: "0 0 10px 0",
+              fontSize: "16px",
+              fontWeight: "normal",
+              opacity: 0.9,
+            }}
+          >
+            Estimasi Nilai Aset
+          </h3>
+          <h1 style={{ margin: 0, fontSize: "42px", fontWeight: "bold" }}>
+            Rp {totalAssetValue.toLocaleString("id-ID")}
+          </h1>
         </div>
       </div>
 
       {/* NAVIGASI TAB */}
-      <div className="tab-nav">
-        <button className={`tab-btn ${activeTab === 'stock' ? 'active' : ''}`} onClick={() => setActiveTab('stock')}>Laporan Stok</button>
-        <button className={`tab-btn ${activeTab === 'trans' ? 'active' : ''}`} onClick={() => setActiveTab('trans')}>Riwayat Transaksi</button>
-        <button className={`tab-btn ${activeTab === 'supplier' ? 'active' : ''}`} onClick={() => setActiveTab('supplier')}>Data Supplier</button>
+      <div
+        style={{
+          display: "flex",
+          gap: "10px",
+          marginBottom: "20px",
+          borderBottom: "2px solid #e2e8f0",
+        }}
+      >
+        <button
+          className={
+            activeTab === "stock" ? "btn-add-product" : "btn-back-modern"
+          }
+          style={{
+            borderRadius: "8px 8px 0 0",
+            flex: 1,
+          }}
+          onClick={() => setActiveTab("stock")}
+        >
+          Laporan Stok
+        </button>
+        <button
+          className={
+            activeTab === "trans" ? "btn-add-product" : "btn-back-modern"
+          }
+          style={{
+            borderRadius: "8px 8px 0 0",
+            flex: 1,
+          }}
+          onClick={() => setActiveTab("trans")}
+        >
+          Riwayat Transaksi
+        </button>
+        <button
+          className={
+            activeTab === "supplier" ? "btn-add-product" : "btn-back-modern"
+          }
+          style={{
+            borderRadius: "8px 8px 0 0",
+            flex: 1,
+          }}
+          onClick={() => setActiveTab("supplier")}
+        >
+          Data Supplier
+        </button>
       </div>
 
       {/* KONTEN TAB */}
-      <div className="tab-content">
-        
+      <div className="products-table-container">
         {/* TAB 1: STOK */}
-        {activeTab === 'stock' && (
-            <div>
-                <div className="tab-header">
-                    <h3>Laporan Stok Terkini</h3>
-                    <button onClick={() => downloadCSV(products, 'laporan_stok.csv')} className="btn-action bg-color-2">Download CSV</button>
-                </div>
-                <table className="data-table">
-                    <thead>
-                        <tr><th>Nama</th><th>SKU</th><th>Stok</th><th>Harga</th><th>Total Nilai</th></tr>
-                    </thead>
-                    <tbody>
-                        {products.map(p => (
-                            <tr key={p.id}>
-                                <td>{p.name}</td>
-                                <td>{p.sku}</td>
-                                <td>{p.stock}</td>
-                                <td>{p.price.toLocaleString()}</td>
-                                <td>{(p.stock * p.price).toLocaleString()}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+        {activeTab === "stock" && (
+          <>
+            <div className="table-header">
+              <h3>Laporan Stok Terkini</h3>
+              <button
+                onClick={() => downloadCSV(products, "laporan_stok.csv")}
+                className="btn-submit-modern"
+                style={{ padding: "8px 20px", fontSize: "14px" }}
+              >
+                Download CSV
+              </button>
             </div>
+
+            <div className="table-wrapper">
+              <table className="modern-table">
+                <thead>
+                  <tr>
+                    <th>Nama Produk</th>
+                    <th>SKU</th>
+                    <th>Stok</th>
+                    <th>Harga</th>
+                    <th>Total Nilai</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="5"
+                        style={{
+                          textAlign: "center",
+                          padding: "40px",
+                          color: "#999",
+                        }}
+                      >
+                        Belum ada data produk.
+                      </td>
+                    </tr>
+                  ) : (
+                    products.map((p) => (
+                      <tr key={p.id}>
+                        <td>
+                          <strong>{p.name}</strong>
+                        </td>
+                        <td>
+                          <span className="sku-badge">{p.sku}</span>
+                        </td>
+                        <td>
+                          <span
+                            className={`stock-badge ${
+                              p.stock <= p.min_stock ? "stock-low" : "stock-ok"
+                            }`}
+                          >
+                            {p.stock}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="price-text">
+                            Rp {p.price.toLocaleString("id-ID")}
+                          </span>
+                        </td>
+                        <td>
+                          <strong>
+                            Rp {(p.stock * p.price).toLocaleString("id-ID")}
+                          </strong>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
 
         {/* TAB 2: TRANSAKSI */}
-        {activeTab === 'trans' && (
-            <div>
-                 <div className="tab-header">
-                    <h3>Riwayat Transaksi Lengkap</h3>
-                    <button onClick={() => downloadCSV(transactions, 'laporan_transaksi.csv')} className="btn-action bg-color-2">Download CSV</button>
-                </div>
-                <table className="data-table">
-                    <thead>
-                        <tr><th>Tanggal</th><th>Produk</th><th>Tipe</th><th>Jumlah</th><th>Catatan</th></tr>
-                    </thead>
-                    <tbody>
-                        {transactions.map(t => (
-                            <tr key={t.id}>
-                                <td>{t.date}</td>
-                                <td>{t.product_name}</td>
-                                <td>{t.type === 'in' ? 'MASUK' : 'KELUAR'}</td>
-                                <td>{t.quantity}</td>
-                                <td>{t.notes}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+        {activeTab === "trans" && (
+          <>
+            <div className="table-header">
+              <h3>Riwayat Transaksi Lengkap</h3>
+              <button
+                onClick={() =>
+                  downloadCSV(transactions, "laporan_transaksi.csv")
+                }
+                className="btn-submit-modern"
+                style={{ padding: "8px 20px", fontSize: "14px" }}
+              >
+                Download CSV
+              </button>
             </div>
+
+            <div className="table-wrapper">
+              <table className="modern-table">
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Produk</th>
+                    <th>Tipe</th>
+                    <th>Jumlah</th>
+                    <th>Catatan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactions.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="5"
+                        style={{
+                          textAlign: "center",
+                          padding: "40px",
+                          color: "#999",
+                        }}
+                      >
+                        Belum ada transaksi.
+                      </td>
+                    </tr>
+                  ) : (
+                    transactions.map((t) => (
+                      <tr key={t.id}>
+                        <td>{t.date}</td>
+                        <td>
+                          <strong>{t.product_name}</strong>
+                        </td>
+                        <td>
+                          {t.type === "in" ? (
+                            <span className="status-badge status-ok">
+                              ➕ MASUK
+                            </span>
+                          ) : (
+                            <span className="status-badge status-warning">
+                              ➖ KELUAR
+                            </span>
+                          )}
+                        </td>
+                        <td>
+                          <span
+                            className={`stock-badge ${
+                              t.type === "in" ? "stock-ok" : "stock-low"
+                            }`}
+                          >
+                            {t.quantity}
+                          </span>
+                        </td>
+                        <td>{t.notes || "-"}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
 
         {/* TAB 3: SUPPLIER */}
-        {activeTab === 'supplier' && (
-             <div>
-                <div className="tab-header">
-                    <h3>Daftar Mitra Supplier</h3>
-                    <button onClick={() => downloadCSV(suppliers, 'data_supplier.csv')} className="btn-action bg-color-2">Download CSV</button>
-                </div>
-                <table className="data-table">
-                     <thead>
-                        <tr><th>Nama</th><th>Kontak</th><th>Email</th></tr>
-                    </thead>
-                    <tbody>
-                        {suppliers.map(s => (
-                            <tr key={s.id}>
-                                <td>{s.name}</td>
-                                <td>{s.contact}</td>
-                                <td>{s.email}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+        {activeTab === "supplier" && (
+          <>
+            <div className="table-header">
+              <h3>Daftar Mitra Supplier</h3>
+              <button
+                onClick={() => downloadCSV(suppliers, "data_supplier.csv")}
+                className="btn-submit-modern"
+                style={{ padding: "8px 20px", fontSize: "14px" }}
+              >
+                Download CSV
+              </button>
             </div>
-        )}
 
+            <div className="table-wrapper">
+              <table className="modern-table">
+                <thead>
+                  <tr>
+                    <th>Nama Supplier</th>
+                    <th>Kontak</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {suppliers.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="3"
+                        style={{
+                          textAlign: "center",
+                          padding: "40px",
+                          color: "#999",
+                        }}
+                      >
+                        Belum ada supplier.
+                      </td>
+                    </tr>
+                  ) : (
+                    suppliers.map((s) => (
+                      <tr key={s.id}>
+                        <td>
+                          <strong>{s.name}</strong>
+                        </td>
+                        <td>{s.contact}</td>
+                        <td>{s.email}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
