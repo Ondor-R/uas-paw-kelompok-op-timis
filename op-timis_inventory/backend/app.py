@@ -5,7 +5,7 @@ from pyramid.view import view_config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import bcrypt
-from models import User, Base, Product
+from models import User, Base, Product, Transaction
 
 # --- DATABASE SETUP ---
 DATABASE_URL = "postgresql://postgres:18oktober@localhost/d5_db"
@@ -131,6 +131,81 @@ def create_product(request):
         session.close()
         
         return {'message': 'Produk berhasil disimpan!'}
+    except Exception as e:
+        request.response.status = 500
+        return {'message': str(e)}
+
+#-----------------------------------------------FITUR TRANSAKSI: jual/beli
+@view_config(route_name='transactions', renderer='json', request_method='POST')
+def create_transaction(request):
+    try:
+        payload = request.json_body
+        product_id = int(payload['product_id'])
+        trans_type = payload['type']
+        quantity = int(payload['quantity'])
+        notes = payload.get('notes', '')
+
+        session = Session()
+        product = session.query(Product).filter_by(id=product_id).first()
+
+        if not product:
+            session.close()
+            request.response.status = 404
+            return {'message': 'Produk tidak ditemukan!'}
+
+        if trans_type == 'out':
+            if product.stock < quantity:
+                session.close()
+                request.response.status = 400
+                return {'message': f'Stok tidak cukup! Sisa stok: {product.stock}'}
+            product.stock -= quantity
+        
+        elif trans_type == 'in':
+            product.stock += quantity
+
+        else:
+            session.close()
+            request.response.status = 400
+            return {'message': 'Tipe transaksi harus in atau out'}
+
+        new_trans = Transaction(
+            product_id=product.id,
+            type=trans_type,
+            quantity=quantity,
+            date=datetime.date.today(),
+            notes=notes
+        )
+
+        session.add(new_trans)
+        session.commit()
+        session.close()
+
+        return {'message': 'Transaksi berhasil & Stok diperbarui!'}
+
+    except Exception as e:
+        request.response.status = 500
+        return {'message': str(e)}
+
+#-----------------------------------------------FITUR RIWAYAT: LIHAT SEMUA TRANSAKSI
+@view_config(route_name='transactions', renderer='json', request_method='GET')
+def get_transactions(request):
+    try:
+        session = Session()
+        transactions = session.query(Transaction, Product).join(Product, Transaction.product_id == Product.id).order_by(desc(Transaction.id)).all()
+        
+        data = []
+        for t, p in transactions:
+            data.append({
+                'id': t.id,
+                'product_name': p.name,
+                'type': t.type,
+                'quantity': t.quantity,
+                'date': str(t.date),
+                'notes': t.notes
+            })
+            
+        session.close()
+        return data
     except Exception as e:
         request.response.status = 500
         return {'message': str(e)}
