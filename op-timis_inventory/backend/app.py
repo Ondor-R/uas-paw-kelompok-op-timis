@@ -218,8 +218,10 @@ if __name__ == '__main__':
         config.add_route('register', '/register')
         config.add_route('login', '/login')
         config.add_route('products', '/products')
+        config.add_route('transactions', '/transactions')
 
         config.add_view(options_view, route_name='products')
+        config.add_view(options_view, route_name='transactions')
         
         config.scan()
         app = config.make_wsgi_app()
