@@ -5,7 +5,7 @@ from pyramid.view import view_config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import bcrypt
-from models import User, Base, Product, Transaction
+from models import User, Base, Product, Transaction, Supplier
 
 # --- DATABASE SETUP ---
 DATABASE_URL = "postgresql://postgres:18oktober@localhost/d5_db"
@@ -209,6 +209,50 @@ def get_transactions(request):
     except Exception as e:
         request.response.status = 500
         return {'message': str(e)}
+
+#-----------------------------------------------FITUR SUPPLIER: LIHAT SEMUA (READ)
+@view_config(route_name='suppliers', renderer='json', request_method='GET')
+def get_suppliers(request):
+    try:
+        session = Session()
+        suppliers = session.query(Supplier).order_by(desc(Supplier.id)).all()
+        
+        data = []
+        for s in suppliers:
+            data.append({
+                'id': s.id,
+                'name': s.name,
+                'contact': s.contact,
+                'email': s.email
+            })
+        
+        session.close()
+        return data
+    except Exception as e:
+        request.response.status = 500
+        return {'message': str(e)}
+
+#-----------------------------------------------FITUR SUPPLIER: TAMBAH BARU (CREATE)
+@view_config(route_name='suppliers', renderer='json', request_method='POST')
+def create_supplier(request):
+    try:
+        payload = request.json_body
+        session = Session()
+        
+        new_supplier = Supplier(
+            name=payload['name'],
+            contact=payload['contact'],
+            email=payload['email']
+        )
+        
+        session.add(new_supplier)
+        session.commit()
+        session.close()
+        
+        return {'message': 'Supplier berhasil ditambahkan!'}
+    except Exception as e:
+        request.response.status = 500
+        return {'message': str(e)}
 
 #-----------------------------------------------MAIN SERVER
 if __name__ == '__main__':
