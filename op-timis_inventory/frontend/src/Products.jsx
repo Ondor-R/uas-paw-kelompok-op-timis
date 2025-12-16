@@ -20,6 +20,28 @@ function Products() {
     }
   };
 
+  const [form, setForm] = useState({
+    name: '', sku: '', category: '', price: '', stock: '', min_stock: ''
+  });
+  
+  const [message, setMessage] = useState('');
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:6543/products', form);
+      setMessage('Produk berhasil ditambahkan!');
+      setForm({ name: '', sku: '', category: '', price: '', stock: '', min_stock: '' });
+      fetchProducts(); // Refresh tabel otomatis
+    } catch (error) {
+      setMessage('Gagal: ' + (error.response?.data?.message || error.message));
+    }
+  };
+
   return (
     <div className="page-container">
       <button onClick={() => navigate('/dashboard')} className="btn-back">&larr; Dashboard</button>
