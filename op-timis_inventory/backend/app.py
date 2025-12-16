@@ -9,7 +9,7 @@ import datetime
 from models import User, Base, Product, Transaction, Supplier
 
 # --- DATABASE SETUP ---
-DATABASE_URL = "postgresql://postgres:abims@localhost/d5_db"
+DATABASE_URL = "postgresql://postgres:18oktober@localhost/d5_db"
 db_engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=db_engine)
 
