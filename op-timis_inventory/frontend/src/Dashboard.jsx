@@ -77,7 +77,32 @@ function Dashboard() {
 
             <div className="page-container">
                 <h2>Status</h2>
-                <p>Memuat dashboard...</p>
+                <div className="stat-grid">
+                    <div className="stat-card bg-color-1">
+                        <span className="stat-label">Total Produk</span>
+                        <span className="stat-value">{stats.totalProducts}</span>
+                    </div>
+
+                    <div className="stat-card bg-color-4">
+                        <span className="stat-label">Mitra Supplier</span>
+                        <span className="stat-value">{stats.totalSuppliers}</span>
+                    </div>
+
+                    <div className={`stat-card ${stats.lowStock > 0 ? 'bg-danger' : 'bg-color-2'}`}>
+                        <span className="stat-label">Low Stock (ALERT)</span>
+                        <span className="stat-value">
+                        {stats.lowStock} <span style={{ fontSize: '16px' }}>Item</span>
+                        </span>
+                        {stats.lowStock > 0 && <small>Perlu re-stock segera!</small>}
+                    </div>
+
+                    <div className="stat-card bg-color-3">
+                        <span className="stat-label">Total Asset</span>
+                        <span className="stat-value" style={{fontSize: '24px'}}>
+                        Rp {stats.totalAsset.toLocaleString('id-ID')}
+                        </span>
+                    </div>
+                </div>  
             </div>
         </div>
     );
