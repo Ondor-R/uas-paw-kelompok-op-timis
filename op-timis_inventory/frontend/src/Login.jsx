@@ -19,12 +19,12 @@ function Login() {
         password: password
       });
 
-      setMessage('Login Berhasil!');
-      // Simpan user & token
+      //Login Berhasil
+      // Simpan user
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
       // Tampilkan alert lalu redirect
-      alert("Selamat Datang " + response.data.user.name);
+      navigate('/dashboard');
       
     } catch (error) {
       if (error.response) {
