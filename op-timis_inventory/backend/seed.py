@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import User, Base
 
-DATABASE_URL = "postgresql://postgres:18oktober@localhost/d5_db"
+DATABASE_URL = "postgresql://postgres:abims@localhost/d5_db"
 
 def seed_data():
     engine = create_engine(DATABASE_URL)
@@ -28,7 +28,8 @@ def seed_data():
         name="Sigma Admin",
         email="sigmaadmin@gmail.com",
         password=password_hashed,
-        role="admin"  # Sesuai requirement role Admin 
+        role="admin",
+        is_active=True  # Sesuai requirement role Admin 
     )
 
     #Menyimpan ke Database
