@@ -24,10 +24,18 @@ function Dashboard() {
 
     return (
         <div>
-        <div className="page-container">
-            <h2>Status</h2>
-            {/* Konten disini nanti*/}
-        </div>
+            <div className="dashboard-header">
+                <h3 style={{ margin: 0 }}>Op-timis' Inventory</h3>
+                <div className="header-user">
+                <span>Hi, <b>{user.name}</b> ({user.role})</span>
+                <button onClick={handleLogout} className="btn-logout">Logout</button>
+                </div>
+            </div>
+
+            <div className="page-container">
+                <h2>Status</h2>
+                <p>Memuat dashboard...</p>
+            </div>
         </div>
     );
 }
