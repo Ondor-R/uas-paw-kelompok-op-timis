@@ -8,16 +8,15 @@ import bcrypt
 import datetime
 from models import User, Base, Product, Transaction, Supplier
 
-# --- DATABASE SETUP ---
 DATABASE_URL = "postgresql://postgres:18oktober@localhost/d5_db"
 db_engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=db_engine)
 
-# --- FUNGSI CORS (IZIN AKSES) ---
+#-----------------------------------------------FUNGSI CORS (IZIN AKSES)
 def add_cors_headers_response_callback(event):
     def cors_headers(request, response):
         response.headers.update({
-            'Access-Control-Allow-Origin': 'http://localhost:5173', #utk ke frontend Vite
+            'Access-Control-Allow-Origin': 'http://localhost:5173',
             'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
             'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization',
             'Access-Control-Allow-Credentials': 'true',
@@ -26,8 +25,6 @@ def add_cors_headers_response_callback(event):
     event.request.add_response_callback(cors_headers)
 
 # --- VIEW KHUSUS OPTIONS (PREFLIGHT) ---
-# Ini penting! Browser "bertanya dulu" (OPTIONS) sebelum kirim data (POST).
-# Kita harus jawab "OK" untuk semua pertanyaan ini.
 @view_config(route_name='register', request_method='OPTIONS')
 @view_config(route_name='login', request_method='OPTIONS')
 def options_view(request):
@@ -73,11 +70,9 @@ def login(request):
 
         if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
             
-            # --- CEK STATUS AKTIF ---
             if not user.is_active:
-                request.response.status = 403 # Forbidden
+                request.response.status = 403
                 return {'message': 'Akun belum diaktifkan oleh Admin!'}
-            # ------------------------
 
             return {
                 'message': 'Login Sukses',
@@ -91,17 +86,16 @@ def login(request):
         request.response.status = 500
         return {'message': f'Error: {str(e)}'}
 
-# --- FITUR ADMIN: LIST STAFF PENDING ---
+#-----------------------------------------------FITUR ADMIN: LIST STAFF PENDING
 @view_config(route_name='users', renderer='json', request_method='GET')
 def get_pending_users(request):
     session = Session()
-    # Ambil user yang role='staff'
     users = session.query(User).filter_by(role='staff').order_by(User.id).all()
     data = [{'id': u.id, 'name': u.name, 'email': u.email, 'is_active': u.is_active} for u in users]
     session.close()
     return data
 
-# --- FITUR ADMIN: APPROVE STAFF ---
+#-----------------------------------------------FITUR ADMIN: APPROVE STAFF
 @view_config(route_name='approve_user', renderer='json', request_method='POST')
 def approve_user(request):
     payload = request.json_body
@@ -118,7 +112,7 @@ def approve_user(request):
     session.close()
     return {'message': 'User tidak ditemukan'}
 
-# --- FITUR ADMIN: HAPUS USER (REJECT / DELETE) ---
+#-----------------------------------------------FITUR ADMIN: HAPUS USER (REJECT / DELETE)
 @view_config(route_name='delete_user', renderer='json', request_method='POST')
 def delete_user(request):
     try:
@@ -127,7 +121,6 @@ def delete_user(request):
         
         session = Session()
         
-        # 1. Cari user yang mau dihapus
         user = session.query(User).filter_by(id=user_id).first()
         
         if not user:
@@ -135,13 +128,11 @@ def delete_user(request):
             request.response.status = 404
             return {'message': 'User tidak ditemukan'}
 
-        # 2. Proteksi: Jangan sampai Admin menghapus dirinya sendiri
         if user.role == 'admin':
             session.close()
             request.response.status = 400
             return {'message': 'TIDAK BOLEH MENGHAPUS ADMIN!'}
 
-        # 3. Hapus User
         session.delete(user)
         session.commit()
         session.close()
@@ -152,15 +143,14 @@ def delete_user(request):
         request.response.status = 500
         return {'message': str(e)}
 
-# --- FITUR PRODUK: LIHAT SEMUA (READ) ---
+#-----------------------------------------------FITUR PRODUK: LIHAT SEMUA (READ)
 @view_config(route_name='products', renderer='json', request_method='GET')
 def get_products(request):
     try:
         session = Session()
-        # Ambil semua produk, urutkan dari yang terbaru (id descending)
+
         products = session.query(Product).order_by(desc(Product.id)).all()
-        
-        # Ubah format database menjadi JSON biasa agar bisa dibaca Frontend
+
         data = []
         for p in products:
             data.append({
@@ -179,14 +169,13 @@ def get_products(request):
         request.response.status = 500
         return {'message': str(e)}
 
-# --- FITUR PRODUK: TAMBAH BARU (CREATE) ---
+#-----------------------------------------------FITUR PRODUK: TAMBAH BARU (CREATE)
 @view_config(route_name='products', renderer='json', request_method='POST')
 def create_product(request):
     try:
         payload = request.json_body
         session = Session()
         
-        # Cek apakah SKU (kode unik barang) sudah ada
         if session.query(Product).filter_by(sku=payload['sku']).first():
             session.close()
             request.response.status = 400
@@ -210,7 +199,7 @@ def create_product(request):
         request.response.status = 500
         return {'message': str(e)}
 
-# --- FITUR TRANSAKSI: STOK MASUK/KELUAR ---
+##-----------------------------------------------FITUR TRANSAKSI: STOK MASUK/KELUAR
 @view_config(route_name='transactions', renderer='json', request_method='POST')
 def create_transaction(request):
     try:
@@ -220,7 +209,6 @@ def create_transaction(request):
         quantity = int(payload['quantity'])
         notes = payload.get('notes', '')
         
-        # Ambil Supplier ID (bisa jadi kosong/None)
         supplier_id = payload.get('supplier_id') 
 
         session = Session()
@@ -231,9 +219,8 @@ def create_transaction(request):
             request.response.status = 404
             return {'message': 'Produk tidak ditemukan!'}
 
-        # --- LOGIKA VALIDASI BARU ---
+        #-----------------------------------------------LOGIKA VALIDASI BARU
         if trans_type == 'in':
-            # Kalau masuk, WAJIB ada supplier
             if not supplier_id:
                 session.close()
                 request.response.status = 400
@@ -248,17 +235,16 @@ def create_transaction(request):
                 return {'message': f'Stok tidak cukup! Sisa: {product.stock}'}
             
             product.stock -= quantity
-            supplier_id = None # Pastikan null kalau barang keluar
+            supplier_id = None
             
         else:
             session.close()
             request.response.status = 400
             return {'message': 'Tipe transaksi salah'}
 
-        # Simpan Transaksi dengan Supplier ID
         new_trans = Transaction(
             product_id=product.id,
-            supplier_id=supplier_id, # <--- Disimpan disini
+            supplier_id=supplier_id,
             type=trans_type,
             quantity=quantity,
             date=datetime.date.today(),
@@ -275,27 +261,23 @@ def create_transaction(request):
         request.response.status = 500
         return {'message': str(e)}
 
-# --- FITUR RIWAYAT: LIHAT SEMUA TRANSAKSI ---
+#-----------------------------------------------FITUR RIWAYAT: LIHAT SEMUA TRANSAKSI
 @view_config(route_name='transactions', renderer='json', request_method='GET')
 def get_transactions(request):
     try:
         session = Session()
         
-        # Query Tingkat Lanjut:
-        # Ambil Transaksi, Join ke Produk, dan Outer Join ke Supplier (karena supplier bisa null)
         results = session.query(Transaction, Product, Supplier).\
             join(Product, Transaction.product_id == Product.id).\
             outerjoin(Supplier, Transaction.supplier_id == Supplier.id).\
             order_by(desc(Transaction.id)).all()
         
         data = []
-        # results berisi tuple (Transaction, Product, Supplier)
-        # Jika supplier null, variabel `s` akan None
         for t, p, s in results:
             data.append({
                 'id': t.id,
                 'product_name': p.name,
-                'supplier_name': s.name if s else '-', # Tampilkan nama atau strip
+                'supplier_name': s.name if s else '-',
                 'type': t.type,
                 'quantity': t.quantity,
                 'date': str(t.date),
@@ -308,7 +290,7 @@ def get_transactions(request):
         request.response.status = 500
         return {'message': str(e)}
 
-# --- FITUR SUPPLIER: LIHAT SEMUA (READ) ---
+##-----------------------------------------------FITUR SUPPLIER: LIHAT SEMUA (READ)
 @view_config(route_name='suppliers', renderer='json', request_method='GET')
 def get_suppliers(request):
     try:
@@ -330,7 +312,7 @@ def get_suppliers(request):
         request.response.status = 500
         return {'message': str(e)}
 
-# --- FITUR SUPPLIER: TAMBAH BARU (CREATE) ---
+#-----------------------------------------------FITUR SUPPLIER: TAMBAH BARU (CREATE)
 @view_config(route_name='suppliers', renderer='json', request_method='POST')
 def create_supplier(request):
     try:
