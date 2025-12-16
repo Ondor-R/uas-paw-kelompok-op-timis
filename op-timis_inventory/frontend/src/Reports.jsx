@@ -65,132 +65,58 @@ function Reports() {
 
   return (
     <div className="products-page">
-      {/* Header Section */}
       <div className="products-header">
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="btn-back-modern"
-        >
+        <button onClick={() => navigate("/dashboard")} className="btn-back-modern">
           <span>←</span> Kembali
         </button>
         <h1 className="products-title">Laporan Sistem</h1>
-        <div style={{ width: "160px" }}></div> {/* Spacer for alignment */}
+        <div style={{ width: "160px" }}></div>
       </div>
 
-      {/* Alert Message */}
       {message && (
-        <div
-          className={`alert-modern ${
-            message.includes("✅") ? "alert-success" : "alert-error"
-          }`}
-        >
+        <div className={`alert-modern ${message.includes("✅") ? "alert-success" : "alert-error"}`}>
           {message}
         </div>
       )}
 
       {/* RINGKASAN KEUANGAN */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "20px",
-          marginBottom: "30px",
-        }}
-      >
-        <div
-          className="product-form-card"
-          style={{
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            color: "white",
-            textAlign: "center",
-          }}
-        >
-          <h3
-            style={{
-              margin: "0 0 10px 0",
-              fontSize: "16px",
-              fontWeight: "normal",
-              opacity: 0.9,
-            }}
-          >
-            Total Stok Barang
-          </h3>
-          <h1 style={{ margin: 0, fontSize: "42px", fontWeight: "bold" }}>
+      <div className="report-summary-grid">
+        <div className="stat-card bg-grad-blue-purple">
+          <h3 className="stat-title">Total Stok Barang</h3>
+          <h1 className="stat-value">
             {totalItems} <span style={{ fontSize: "20px" }}>Unit</span>
           </h1>
         </div>
-        <div
-          className="product-form-card"
-          style={{
-            background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-            color: "white",
-            textAlign: "center",
-          }}
-        >
-          <h3
-            style={{
-              margin: "0 0 10px 0",
-              fontSize: "16px",
-              fontWeight: "normal",
-              opacity: 0.9,
-            }}
-          >
-            Estimasi Nilai Aset
-          </h3>
-          <h1 style={{ margin: 0, fontSize: "42px", fontWeight: "bold" }}>
+        <div className="stat-card bg-grad-pink-red">
+          <h3 className="stat-title">Estimasi Nilai Aset</h3>
+          <h1 className="stat-value">
             Rp {totalAssetValue.toLocaleString("id-ID")}
           </h1>
         </div>
       </div>
 
       {/* NAVIGASI TAB */}
-      <div
-        style={{
-          display: "flex",
-          gap: "10px",
-          marginBottom: "20px",
-          borderBottom: "2px solid #e2e8f0",
-        }}
-      >
+      <div className="tab-container">
         <button
-          className={
-            activeTab === "stock" ? "btn-add-product" : "btn-back-modern"
-          }
-          style={{
-            borderRadius: "8px 8px 0 0",
-            flex: 1,
-          }}
+          className={`${activeTab === "stock" ? "btn-add-product" : "btn-back-modern"} tab-btn`}
           onClick={() => setActiveTab("stock")}
         >
           Laporan Stok
         </button>
         <button
-          className={
-            activeTab === "trans" ? "btn-add-product" : "btn-back-modern"
-          }
-          style={{
-            borderRadius: "8px 8px 0 0",
-            flex: 1,
-          }}
+          className={`${activeTab === "trans" ? "btn-add-product" : "btn-back-modern"} tab-btn`}
           onClick={() => setActiveTab("trans")}
         >
           Riwayat Transaksi
         </button>
         <button
-          className={
-            activeTab === "supplier" ? "btn-add-product" : "btn-back-modern"
-          }
-          style={{
-            borderRadius: "8px 8px 0 0",
-            flex: 1,
-          }}
+          className={`${activeTab === "supplier" ? "btn-add-product" : "btn-back-modern"} tab-btn`}
           onClick={() => setActiveTab("supplier")}
         >
           Data Supplier
         </button>
       </div>
 
-      {/* KONTEN TAB */}
       <div className="products-table-container">
         {/* TAB 1: STOK */}
         {activeTab === "stock" && (
@@ -200,12 +126,11 @@ function Reports() {
               <button
                 onClick={() => downloadCSV(products, "laporan_stok.csv")}
                 className="btn-submit-modern"
-                style={{ padding: "8px 20px", fontSize: "14px" }}
+                style={{ marginTop: 0, padding: "8px 20px", fontSize: "14px" }}
               >
                 Download CSV
               </button>
             </div>
-
             <div className="table-wrapper">
               <table className="modern-table">
                 <thead>
@@ -220,45 +145,22 @@ function Reports() {
                 <tbody>
                   {products.length === 0 ? (
                     <tr>
-                      <td
-                        colSpan="5"
-                        style={{
-                          textAlign: "center",
-                          padding: "40px",
-                          color: "#999",
-                        }}
-                      >
+                      <td colSpan="5" className="text-center" style={{ padding: "40px", color: "#999" }}>
                         Belum ada data produk.
                       </td>
                     </tr>
                   ) : (
                     products.map((p) => (
                       <tr key={p.id}>
+                        <td><strong>{p.name}</strong></td>
+                        <td><span className="sku-badge">{p.sku}</span></td>
                         <td>
-                          <strong>{p.name}</strong>
-                        </td>
-                        <td>
-                          <span className="sku-badge">{p.sku}</span>
-                        </td>
-                        <td>
-                          <span
-                            className={`stock-badge ${
-                              p.stock <= p.min_stock ? "stock-low" : "stock-ok"
-                            }`}
-                          >
+                          <span className={`stock-badge ${p.stock <= p.min_stock ? "stock-low" : "stock-ok"}`}>
                             {p.stock}
                           </span>
                         </td>
-                        <td>
-                          <span className="price-text">
-                            Rp {p.price.toLocaleString("id-ID")}
-                          </span>
-                        </td>
-                        <td>
-                          <strong>
-                            Rp {(p.stock * p.price).toLocaleString("id-ID")}
-                          </strong>
-                        </td>
+                        <td><span className="price-text">Rp {p.price.toLocaleString("id-ID")}</span></td>
+                        <td><strong>Rp {(p.stock * p.price).toLocaleString("id-ID")}</strong></td>
                       </tr>
                     ))
                   )}
@@ -274,16 +176,13 @@ function Reports() {
             <div className="table-header">
               <h3>Riwayat Transaksi Lengkap</h3>
               <button
-                onClick={() =>
-                  downloadCSV(transactions, "laporan_transaksi.csv")
-                }
+                onClick={() => downloadCSV(transactions, "laporan_transaksi.csv")}
                 className="btn-submit-modern"
-                style={{ padding: "8px 20px", fontSize: "14px" }}
+                style={{ marginTop: 0, padding: "8px 20px", fontSize: "14px" }}
               >
                 Download CSV
               </button>
             </div>
-
             <div className="table-wrapper">
               <table className="modern-table">
                 <thead>
@@ -298,14 +197,7 @@ function Reports() {
                 <tbody>
                   {transactions.length === 0 ? (
                     <tr>
-                      <td
-                        colSpan="5"
-                        style={{
-                          textAlign: "center",
-                          padding: "40px",
-                          color: "#999",
-                        }}
-                      >
+                      <td colSpan="5" className="text-center" style={{ padding: "40px", color: "#999" }}>
                         Belum ada transaksi.
                       </td>
                     </tr>
@@ -313,26 +205,16 @@ function Reports() {
                     transactions.map((t) => (
                       <tr key={t.id}>
                         <td>{t.date}</td>
-                        <td>
-                          <strong>{t.product_name}</strong>
-                        </td>
+                        <td><strong>{t.product_name}</strong></td>
                         <td>
                           {t.type === "in" ? (
-                            <span className="status-badge status-ok">
-                              ➕ MASUK
-                            </span>
+                            <span className="status-badge status-ok">➕ MASUK</span>
                           ) : (
-                            <span className="status-badge status-warning">
-                              ➖ KELUAR
-                            </span>
+                            <span className="status-badge status-warning">➖ KELUAR</span>
                           )}
                         </td>
                         <td>
-                          <span
-                            className={`stock-badge ${
-                              t.type === "in" ? "stock-ok" : "stock-low"
-                            }`}
-                          >
+                          <span className={`stock-badge ${t.type === "in" ? "stock-ok" : "stock-low"}`}>
                             {t.quantity}
                           </span>
                         </td>
@@ -354,12 +236,11 @@ function Reports() {
               <button
                 onClick={() => downloadCSV(suppliers, "data_supplier.csv")}
                 className="btn-submit-modern"
-                style={{ padding: "8px 20px", fontSize: "14px" }}
+                style={{ marginTop: 0, padding: "8px 20px", fontSize: "14px" }}
               >
                 Download CSV
               </button>
             </div>
-
             <div className="table-wrapper">
               <table className="modern-table">
                 <thead>
@@ -372,23 +253,14 @@ function Reports() {
                 <tbody>
                   {suppliers.length === 0 ? (
                     <tr>
-                      <td
-                        colSpan="3"
-                        style={{
-                          textAlign: "center",
-                          padding: "40px",
-                          color: "#999",
-                        }}
-                      >
+                      <td colSpan="3" className="text-center" style={{ padding: "40px", color: "#999" }}>
                         Belum ada supplier.
                       </td>
                     </tr>
                   ) : (
                     suppliers.map((s) => (
                       <tr key={s.id}>
-                        <td>
-                          <strong>{s.name}</strong>
-                        </td>
+                        <td><strong>{s.name}</strong></td>
                         <td>{s.contact}</td>
                         <td>{s.email}</td>
                       </tr>

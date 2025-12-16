@@ -290,7 +290,7 @@ def get_transactions(request):
         request.response.status = 500
         return {'message': str(e)}
 
-##-----------------------------------------------FITUR SUPPLIER: LIHAT SEMUA (READ)
+#-----------------------------------------------FITUR SUPPLIER: LIHAT SEMUA (READ)
 @view_config(route_name='suppliers', renderer='json', request_method='GET')
 def get_suppliers(request):
     try:

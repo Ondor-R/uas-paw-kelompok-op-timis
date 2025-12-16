@@ -89,8 +89,7 @@ function ManageStaff() {
       {/* Info Box */}
       <div className="product-form-card" style={{ marginBottom: "20px" }}>
         <p style={{ margin: 0, color: "#666" }}>
-          ℹ️ Validasi pendaftaran baru atau hapus akses staff. Staff yang belum
-          diaktifkan ditandai dengan status <strong>PENDING</strong>.
+          ℹ️ Validasi pendaftaran baru atau hapus akses staff.
         </p>
       </div>
 
