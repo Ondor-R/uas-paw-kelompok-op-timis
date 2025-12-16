@@ -1,10 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './style.css';
 
 function Dashboard() {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
+    const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalSuppliers: 0,
+    lowStock: 0,
+    totalAsset: 0
+    });
+
+  // Update useEffect agar memanggil fetchData
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (!storedUser) {
+      navigate('/');
+    } else {
+      setUser(JSON.parse(storedUser));
+      fetchData(); // Panggil fungsi ambil data
+    }
+  }, [navigate]);
+
+  const fetchData = async () => {
+    try {
+      const [resProd, resSupp] = await Promise.all([
+        axios.get('http://localhost:6543/products'),
+        axios.get('http://localhost:6543/suppliers')
+      ]);
+
+      const products = resProd.data;
+      const suppliers = resSupp.data;
+
+      // Hitung Logika
+      const lowStockCount = products.filter(p => p.stock <= p.min_stock).length;
+      const totalAssetValue = products.reduce((acc, curr) => acc + (curr.price * curr.stock), 0);
+
+      setStats({
+        totalProducts: products.length,
+        totalSuppliers: suppliers.length,
+        lowStock: lowStockCount,
+        totalAsset: totalAssetValue
+      });
+    } catch (error) {
+      console.error("Gagal mengambil data statistik", error);
+    }
+  };
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
