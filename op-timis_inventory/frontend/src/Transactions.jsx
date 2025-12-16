@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './style.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./style.css";
 
 function Transactions() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [message, setMessage] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState('');
-  const [type, setType] = useState('in');
-  const [quantity, setQuantity] = useState('');
-  const [notes, setNotes] = useState('');
+  const [message, setMessage] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [type, setType] = useState("in");
+  const [quantity, setQuantity] = useState("");
+  const [notes, setNotes] = useState("");
   const [suppliers, setSuppliers] = useState([]);
-  const [selectedSupplier, setSelectedSupplier] = useState('');
+  const [selectedSupplier, setSelectedSupplier] = useState("");
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -22,129 +23,241 @@ function Transactions() {
   }, []);
 
   const fetchProducts = async () => {
-    const res = await axios.get('http://localhost:6543/products');
+    const res = await axios.get("http://localhost:6543/products");
     setProducts(res.data);
-    if(res.data.length > 0) setSelectedProduct(res.data[0].id);
+    if (res.data.length > 0) setSelectedProduct(res.data[0].id);
   };
 
   const fetchSuppliers = async () => {
-    const res = await axios.get('http://localhost:6543/suppliers');
+    const res = await axios.get("http://localhost:6543/suppliers");
     setSuppliers(res.data);
   };
 
   const fetchHistory = async () => {
-    const res = await axios.get('http://localhost:6543/transactions');
+    const res = await axios.get("http://localhost:6543/transactions");
     setTransactions(res.data);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('Memproses...');
     try {
-      await axios.post('http://localhost:6543/transactions', {
+      await axios.post("http://localhost:6543/transactions", {
         product_id: selectedProduct,
         supplier_id: selectedSupplier,
         type: type,
         quantity: quantity,
-        notes: notes
+        notes: notes,
       });
-      setMessage('Sukses! Stok telah berubah.');
+      setMessage("✅ Transaksi berhasil dicatat! Stok telah diperbarui.");
       fetchHistory();
-      setSelectedSupplier('');
-      setQuantity('');
-      setNotes('');
+      setSelectedSupplier("");
+      setQuantity("");
+      setNotes("");
+      setShowForm(false);
+      setTimeout(() => setMessage(""), 3000);
     } catch (error) {
-      setMessage('Gagal: ' + (error.response?.data?.message || error.message));
+      setMessage(
+        "❌ Gagal: " + (error.response?.data?.message || error.message)
+      );
+      setTimeout(() => setMessage(""), 3000);
     }
   };
 
   return (
-    <div className="page-container">
-        <button onClick={() => navigate('/dashboard')} className="btn-back">&larr; Dashboard</button>
-        <h2>Transaksi Stok (Masuk / Keluar)</h2>
+    <div className="products-page">
+      {/* Header Section */}
+      <div className="products-header">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="btn-back-modern"
+        >
+          <span>←</span> Kembali
+        </button>
+        <h1 className="products-title">Transaksi Stok</h1>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="btn-add-product"
+        >
+          <span style={{ fontSize: "20px" }}>+</span> Catat Transaksi
+        </button>
+      </div>
 
-        {/* FORM TRANSAKSI */}
-        <div className="form-card" style={{ background: '#ffffffff' }}>
+      {/* Alert Message */}
+      {message && (
+        <div
+          className={`alert-modern ${
+            message.includes("✅") ? "alert-success" : "alert-error"
+          }`}
+        >
+          {message}
+        </div>
+      )}
+
+      {/* FORM TRANSAKSI */}
+      {showForm && (
+        <div className="product-form-card">
+          <div className="form-header">
             <h3>Catat Transaksi Baru</h3>
-            {message && <p className="alert-msg">{message}</p>}
-            
-            <form onSubmit={handleSubmit} className="transaction-form">
-                {/* Pilih Produk */}
-                <div className="trans-group">
-                    <label>Produk:</label>
-                    <select className="trans-select" value={selectedProduct} onChange={(e) => setSelectedProduct(e.target.value)}>
-                        {products.map(p => (
-                        <option key={p.id} value={p.id}>{p.name} (Sisa: {p.stock})</option>
-                        ))}
-                    </select>
+            <button
+              onClick={() => setShowForm(false)}
+              className="btn-close-form"
+            >
+              ✕
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="modern-form">
+            <div className="form-row">
+              <div className="form-field">
+                <label>Pilih Produk</label>
+                <select
+                  className="modern-input"
+                  value={selectedProduct}
+                  onChange={(e) => setSelectedProduct(e.target.value)}
+                  required
+                >
+                  {products.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} (Stok: {p.stock})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-field">
+                <label>Tipe Transaksi</label>
+                <select
+                  className="modern-input"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  <option value="in">➕ Stok Masuk (Purchase)</option>
+                  <option value="out">➖ Stok Keluar (Sales)</option>
+                </select>
+              </div>
+            </div>
+
+            {type === "in" && (
+              <div className="form-row">
+                <div className="form-field">
+                  <label>Supplier (Wajib untuk Stok Masuk)</label>
+                  <select
+                    className="modern-input"
+                    value={selectedSupplier}
+                    onChange={(e) => setSelectedSupplier(e.target.value)}
+                    required={type === "in"}
+                  >
+                    <option value="">-- Pilih Supplier --</option>
+                    {suppliers.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+              </div>
+            )}
 
-                {/* Pilih Tipe */}
-                <div className="trans-group">
-                    <label>Tipe:</label>
-                    <select className="trans-select" value={type} onChange={(e) => setType(e.target.value)}>
-                        <option value="in">➕ Produk In (Purchase)</option>
-                        <option value="out">➖ Produk Out (Sales)</option>
-                    </select>
-                </div>
+            <div className="form-row">
+              <div className="form-field">
+                <label>Jumlah</label>
+                <input
+                  className="modern-input"
+                  type="number"
+                  placeholder="0"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  required
+                />
+              </div>
 
-                {/* Supplier (Conditional) */}
-                {type === 'in' && (
-                    <div className="trans-group" style={{background:'#dfdfdfff', padding:'5px', borderRadius:'4px'}}>
-                        <label>Supplier (Wajib):</label>
-                        <select className="trans-select" value={selectedSupplier} onChange={(e) => setSelectedSupplier(e.target.value)} required={type === 'in'}>
-                            <option value="">-- Pilih Supplier --</option>
-                            {suppliers.map(s => (
-                                <option key={s.id} value={s.id}>{s.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                )} 
+              <div className="form-field">
+                <label>Catatan (Opsional)</label>
+                <input
+                  className="modern-input"
+                  type="text"
+                  placeholder="Catatan tambahan..."
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                />
+              </div>
+            </div>
 
-                {/* Jumlah */}
-                <div className="trans-group" style={{ maxWidth: '100px' }}>
-                    <label>Jumlah:</label>
-                    <input className="trans-input" type="number" placeholder="0" value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
-                </div>
+            <button type="submit" className="btn-submit-modern">
+              Simpan Transaksi
+            </button>
+          </form>
+        </div>
+      )}
 
-                {/* Catatan */}
-                <div className="trans-group">
-                    <label>Catatan:</label>
-                    <input className="trans-input" type="text" placeholder="Optional" value={notes} onChange={(e) => setNotes(e.target.value)} />
-                </div>
-
-                <button type="submit" className="btn-action bg-color-2" style={{ height: '38px' }}>Simpan</button>
-            </form>
+      {/* TABEL RIWAYAT TRANSAKSI */}
+      <div className="products-table-container">
+        <div className="table-header">
+          <h3>Riwayat Transaksi</h3>
+          <span className="product-count">{transactions.length} Transaksi</span>
         </div>
 
-        {/* RIWAYAT TRANSAKSI */}
-        <h3>Riwayat Transaksi</h3>
-        <table className="data-table">
+        <div className="table-wrapper">
+          <table className="modern-table">
             <thead>
-                <tr>
-                    <th>Tanggal</th>
-                    <th>Produk</th>
-                    <th>Supplier</th>
-                    <th>Tipe</th>
-                    <th>Jumlah</th>
-                    <th>Catatan</th>
-                </tr>
+              <tr>
+                <th>Tanggal</th>
+                <th>Produk</th>
+                <th>Supplier</th>
+                <th>Tipe</th>
+                <th>Jumlah</th>
+                <th>Catatan</th>
+              </tr>
             </thead>
             <tbody>
-                {transactions.map(t => (
-                <tr key={t.id}>
-                    <td>{t.date}</td>
-                    <td>{t.product_name}</td>
-                    <td>{t.supplier_name}</td>
-                    <td style={{ color: t.type === 'in' ? 'green' : 'red', fontWeight: 'bold' }}>
-                    {t.type === 'in' ? 'MASUK' : 'KELUAR'}
-                    </td>
-                    <td>{t.quantity}</td>
-                    <td>{t.notes}</td>
+              {transactions.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="6"
+                    style={{
+                      textAlign: "center",
+                      padding: "40px",
+                      color: "#999",
+                    }}
+                  >
+                    Belum ada transaksi. Klik "Catat Transaksi" untuk
+                    memulai!
+                  </td>
                 </tr>
-                ))}
+              ) : (
+                transactions.map((t) => (
+                  <tr key={t.id}>
+                    <td>{t.date}</td>
+                    <td>
+                      <strong>{t.product_name}</strong>
+                    </td>
+                    <td>{t.supplier_name || "-"}</td>
+                    <td>
+                      {t.type === "in" ? (
+                        <span className="status-badge status-ok">➕ MASUK</span>
+                      ) : (
+                        <span className="status-badge status-warning">
+                          ➖ KELUAR
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      <span
+                        className={`stock-badge ${
+                          t.type === "in" ? "stock-ok" : "stock-low"
+                        }`}
+                      >
+                        {t.quantity}
+                      </span>
+                    </td>
+                    <td>{t.notes || "-"}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
-        </table>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
