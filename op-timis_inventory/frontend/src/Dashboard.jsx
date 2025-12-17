@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./style.css";
+import logoOptimis from "./assets/OP-TIMIS.png";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ function Dashboard() {
       <div className="products-header">
         <div className="header-logo-section">
           <img
-            src="/src/assets/OP-TIMIS.png"
+            src={logoOptimis}
             alt="Op-timis Logo"
             className="header-logo"
           />

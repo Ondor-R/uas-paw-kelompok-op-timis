@@ -58,7 +58,7 @@ INSERT INTO users (name, email, password, role, is_active)
 VALUES (
     'Sigma Admin', 
     'sigmaadmin@gmail.com', 
-    'admin123', 
+    '$2b$12$lzV.u3t.uF.g.1.2.3.4.5.6.7.8.9.0.1.2.3.4.5.6.7.8.9.0', 
     'admin', 
     TRUE
 ) ON CONFLICT (email) DO NOTHING;
