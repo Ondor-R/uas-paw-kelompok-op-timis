@@ -15,6 +15,7 @@ function Transactions() {
   const [suppliers, setSuppliers] = useState([]);
   const [selectedSupplier, setSelectedSupplier] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:6543';
 
   useEffect(() => {
     fetchProducts();
@@ -23,25 +24,37 @@ function Transactions() {
   }, []);
 
   const fetchProducts = async () => {
-    const res = await axios.get("http://72.62.120.161:6543/products");
-    setProducts(res.data);
-    if (res.data.length > 0) setSelectedProduct(res.data[0].id);
+    try {
+      const res = await axios.get(`${apiUrl}/products`);
+      setProducts(res.data);
+      if (res.data.length > 0) setSelectedProduct(res.data[0].id);
+    } catch (error) {
+      console.error("Gagal mengambil produk:", error);
+    }
   };
 
   const fetchSuppliers = async () => {
-    const res = await axios.get("http://72.62.120.161:6543/suppliers");
-    setSuppliers(res.data);
+    try {
+      const res = await axios.get(`${apiUrl}/suppliers`);
+      setSuppliers(res.data);
+    } catch (error) {
+      console.error("Gagal mengambil supplier:", error);
+    }
   };
 
   const fetchHistory = async () => {
-    const res = await axios.get("http://72.62.120.161:6543/transactions");
-    setTransactions(res.data);
+    try {
+      const res = await axios.get(`${apiUrl}/transactions`);
+      setTransactions(res.data);
+    } catch (error) {
+      console.error("Gagal mengambil riwayat:", error);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://72.62.120.161:6543/transactions", {
+      await axios.post(`${apiUrl}/transactions`, {
         product_id: selectedProduct,
         supplier_id: selectedSupplier,
         type: type,

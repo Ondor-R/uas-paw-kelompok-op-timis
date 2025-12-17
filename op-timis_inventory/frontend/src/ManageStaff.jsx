@@ -7,6 +7,7 @@ function ManageStaff() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState("");
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:6543';
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -20,7 +21,8 @@ function ManageStaff() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://72.62.120.161:6543/users");
+      // MENGGUNAKAN apiUrl
+      const res = await axios.get(`${apiUrl}/users`);
       setUsers(res.data);
     } catch (error) {
       console.error("Gagal ambil data user", error);
@@ -30,7 +32,8 @@ function ManageStaff() {
   const handleApprove = async (id, name) => {
     if (!window.confirm(`Yakin ingin mengaktifkan staff "${name}"?`)) return;
     try {
-      await axios.post("http://72.62.120.161:6543/users/approve", { user_id: id });
+      // MENGGUNAKAN apiUrl
+      await axios.post(`${apiUrl}/users/approve`, { user_id: id });
       setMessage(`✅ Staff ${name} berhasil diaktifkan!`);
       fetchUsers();
       setTimeout(() => setMessage(""), 3000);
@@ -49,7 +52,8 @@ function ManageStaff() {
     )
       return;
     try {
-      await axios.post("http://72.62.120.161:6543/users/delete", { user_id: id });
+      // MENGGUNAKAN apiUrl
+      await axios.post(`${apiUrl}/users/delete`, { user_id: id });
       setMessage(`✅ Akun ${name} berhasil dihapus.`);
       fetchUsers();
       setTimeout(() => setMessage(""), 3000);

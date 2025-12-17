@@ -10,6 +10,7 @@ function Reports() {
   const [suppliers, setSuppliers] = useState([]);
   const [activeTab, setActiveTab] = useState("stock");
   const [message, setMessage] = useState("");
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:6543';
 
   useEffect(() => {
     fetchAllData();
@@ -18,9 +19,9 @@ function Reports() {
   const fetchAllData = async () => {
     try {
       const [resProd, resTrans, resSupp] = await Promise.all([
-        axios.get("http://72.62.120.161:6543/products"),
-        axios.get("http://72.62.120.161:6543/transactions"),
-        axios.get("http://72.62.120.161:6543/suppliers"),
+        axios.get(`${apiUrl}/products`),
+        axios.get(`${apiUrl}/transactions`),
+        axios.get(`${apiUrl}/suppliers`),
       ]);
 
       setProducts(resProd.data);

@@ -12,6 +12,7 @@ function Dashboard() {
     lowStock: 0,
     totalAsset: 0,
   });
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:6543';
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -34,8 +35,8 @@ function Dashboard() {
   const fetchData = async () => {
     try {
       const [resProd, resSupp] = await Promise.all([
-        axios.get("http://72.62.120.161:6543/products"),
-        axios.get("http://72.62.120.161:6543/suppliers"),
+        axios.get(`${apiUrl}/products`),
+        axios.get(`${apiUrl}/suppliers`),
       ]);
 
       const products = resProd.data;

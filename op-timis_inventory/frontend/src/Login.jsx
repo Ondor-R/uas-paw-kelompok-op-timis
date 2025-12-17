@@ -11,6 +11,7 @@ function Login() {
   const [isRegister, setIsRegister] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:6543';
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -18,7 +19,8 @@ function Login() {
 
     try {
       if (isRegister) {
-        await axios.post("http://72.62.120.161:6543/register", {
+        // MENGGUNAKAN apiUrl
+        await axios.post(`${apiUrl}/register`, {
           name,
           email,
           password,
@@ -28,7 +30,8 @@ function Login() {
         setName("");
         setPassword("");
       } else {
-        const response = await axios.post("http://72.62.120.161:6543/login", {
+        // MENGGUNAKAN apiUrl
+        const response = await axios.post(`${apiUrl}/login`, {
           email,
           password,
         });
