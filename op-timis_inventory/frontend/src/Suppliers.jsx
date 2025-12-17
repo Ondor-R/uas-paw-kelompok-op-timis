@@ -16,7 +16,7 @@ function Suppliers() {
 
   const fetchSuppliers = async () => {
     try {
-      const res = await axios.get("http://localhost:6543/suppliers");
+      const res = await axios.get("http://72.62.120.161:6543/suppliers");
       setSuppliers(res.data);
     } catch (error) {
       console.error(error);
@@ -30,7 +30,7 @@ function Suppliers() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:6543/suppliers", form);
+      await axios.post("http://72.62.120.161:6543/suppliers", form);
       setMessage("✅ Supplier berhasil ditambahkan!");
       setForm({ name: "", contact: "", email: "" });
       setShowForm(false);

@@ -20,7 +20,7 @@ function ManageStaff() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:6543/users");
+      const res = await axios.get("http://72.62.120.161:6543/users");
       setUsers(res.data);
     } catch (error) {
       console.error("Gagal ambil data user", error);
@@ -30,7 +30,7 @@ function ManageStaff() {
   const handleApprove = async (id, name) => {
     if (!window.confirm(`Yakin ingin mengaktifkan staff "${name}"?`)) return;
     try {
-      await axios.post("http://localhost:6543/users/approve", { user_id: id });
+      await axios.post("http://72.62.120.161:6543/users/approve", { user_id: id });
       setMessage(`✅ Staff ${name} berhasil diaktifkan!`);
       fetchUsers();
       setTimeout(() => setMessage(""), 3000);
@@ -49,7 +49,7 @@ function ManageStaff() {
     )
       return;
     try {
-      await axios.post("http://localhost:6543/users/delete", { user_id: id });
+      await axios.post("http://72.62.120.161:6543/users/delete", { user_id: id });
       setMessage(`✅ Akun ${name} berhasil dihapus.`);
       fetchUsers();
       setTimeout(() => setMessage(""), 3000);

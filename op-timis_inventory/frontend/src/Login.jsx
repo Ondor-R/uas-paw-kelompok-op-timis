@@ -18,7 +18,7 @@ function Login() {
 
     try {
       if (isRegister) {
-        await axios.post("http://localhost:6543/register", {
+        await axios.post("http://72.62.120.161:6543/register", {
           name,
           email,
           password,
@@ -28,7 +28,7 @@ function Login() {
         setName("");
         setPassword("");
       } else {
-        const response = await axios.post("http://localhost:6543/login", {
+        const response = await axios.post("http://72.62.120.161:6543/login", {
           email,
           password,
         });

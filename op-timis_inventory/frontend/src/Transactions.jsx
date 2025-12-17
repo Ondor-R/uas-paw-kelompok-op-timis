@@ -23,25 +23,25 @@ function Transactions() {
   }, []);
 
   const fetchProducts = async () => {
-    const res = await axios.get("http://localhost:6543/products");
+    const res = await axios.get("http://72.62.120.161:6543/products");
     setProducts(res.data);
     if (res.data.length > 0) setSelectedProduct(res.data[0].id);
   };
 
   const fetchSuppliers = async () => {
-    const res = await axios.get("http://localhost:6543/suppliers");
+    const res = await axios.get("http://72.62.120.161:6543/suppliers");
     setSuppliers(res.data);
   };
 
   const fetchHistory = async () => {
-    const res = await axios.get("http://localhost:6543/transactions");
+    const res = await axios.get("http://72.62.120.161:6543/transactions");
     setTransactions(res.data);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:6543/transactions", {
+      await axios.post("http://72.62.120.161:6543/transactions", {
         product_id: selectedProduct,
         supplier_id: selectedSupplier,
         type: type,

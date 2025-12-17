@@ -34,8 +34,8 @@ function Dashboard() {
   const fetchData = async () => {
     try {
       const [resProd, resSupp] = await Promise.all([
-        axios.get("http://localhost:6543/products"),
-        axios.get("http://localhost:6543/suppliers"),
+        axios.get("http://72.62.120.161:6543/products"),
+        axios.get("http://72.62.120.161:6543/suppliers"),
       ]);
 
       const products = resProd.data;

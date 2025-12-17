@@ -23,7 +23,7 @@ function Products() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:6543/products");
+      const res = await axios.get("http://72.62.120.161:6543/products");
       setProducts(res.data);
     } catch (error) {
       console.error("Gagal ambil data", error);
@@ -37,7 +37,7 @@ function Products() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:6543/products", form);
+      await axios.post("http://72.62.120.161:6543/products", form);
       setMessage("✅ Produk berhasil ditambahkan!");
       setForm({
         name: "",
