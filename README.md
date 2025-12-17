@@ -1,6 +1,6 @@
 # Op-timis Inventory Management System 📦
 
-**Sistem Manajemen Inventori Berbasis Web (Full Stack)**
+**Sistem Manajemen Inventori Berbasis Web**
 *Tugas Besar Pemrograman Aplikasi Web (UAS)*
 
 Website Live: [https://www.op-timis.web.id](https://www.op-timis.web.id)  
