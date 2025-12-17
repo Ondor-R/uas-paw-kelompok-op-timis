@@ -16,7 +16,7 @@ Session = sessionmaker(bind=db_engine)
 def add_cors_headers_response_callback(event):
     def cors_headers(request, response):
         response.headers.update({
-            'Access-Control-Allow-Origin': 'http://localhost:5173',
+            'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
             'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization',
             'Access-Control-Allow-Credentials': 'true',
