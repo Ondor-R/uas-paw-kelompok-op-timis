@@ -49,11 +49,11 @@ Sesuai dengan spesifikasi kebutuhan sistem:
 ---
 
 ## 👨🏿‍🎨 Tim Pengembang
-| Name | NIM | Github |
-|----------|----------|----------|
-| Reyhan Oktavian Putra  | 123140202  | Ondor-R |
-| Muhammad Bimastiar  | 123140211  | 211-Bimas |
-| Fanisa Aulia Safitri | 123140121  | Applepi121 |
-| Refi Ikhsanti | 123140126 | 7refi |
-| Awi Septian Prasetyo  | 123140201 | Awesome1209 |
+| Name | NIM | Role | Github |
+|----------|----------|----------|----------|
+| Reyhan Oktavian Putra  | 123140202  | Team Leader | Ondor-R |
+| Muhammad Bimastiar  | 123140211  | Backend | 211-Bimas |
+| Fanisa Aulia Safitri | 123140121  | Backend | Applepi121 |
+| Refi Ikhsanti | 123140126 | Frontend | 7refi |
+| Awi Septian Prasetyo  | 123140201 | Frontend | Awesome1209 |
 
