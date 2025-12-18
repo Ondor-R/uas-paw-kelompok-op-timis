@@ -57,3 +57,41 @@ Sesuai dengan spesifikasi kebutuhan sistem:
 | Refi Ikhsanti | 123140126 | Frontend | 7refi |
 | Awi Septian Prasetyo  | 123140201 | Frontend | Awesome1209 |
 
+---
+
+## Screenshot
+
+### Login & Register
+<img width="2542" height="1259" alt="image" src="https://github.com/user-attachments/assets/ae9920ec-2f8c-4d26-bd62-2a6110a87a7c" />
+<img width="2538" height="1267" alt="image" src="https://github.com/user-attachments/assets/4d323122-674a-405d-b057-3f85a42917d5" />
+
+### Dashboard Admin
+<img width="2537" height="1270" alt="image" src="https://github.com/user-attachments/assets/afc9a991-161f-429a-856e-63c2fe5f53be" />
+
+### Dashboard Staff
+<img width="2539" height="1235" alt="image" src="https://github.com/user-attachments/assets/d06fcf7b-424d-4f19-9165-2c49b5eeb157" />
+
+### Dashboard with low stock alert
+<img width="2526" height="1256" alt="image" src="https://github.com/user-attachments/assets/cc281949-c08f-4c5c-a5c4-24faf2e55894" />
+
+### Manage Product
+<img width="2540" height="1266" alt="image" src="https://github.com/user-attachments/assets/83ad2f91-fea1-4c44-9f52-f56a6e9210f6" />
+
+### Transactions
+<img width="2542" height="1271" alt="image" src="https://github.com/user-attachments/assets/82e6b178-4a5f-4bef-8800-cde98f202051" />
+
+### Suppliers (admin only)
+<img width="2540" height="1257" alt="image" src="https://github.com/user-attachments/assets/e13e1bbd-db50-43b1-882a-5c3a2a060d78" />
+
+### Reports (admin only)
+<img width="2532" height="1264" alt="image" src="https://github.com/user-attachments/assets/caeb60ad-935a-48aa-a0c9-60ca32b25cd8" />
+
+### Manage Staff (admin only)
+<img width="2534" height="1263" alt="image" src="https://github.com/user-attachments/assets/877ff5ff-e922-42e6-9e40-96ce7aeb01a3" />
+
+
+
+
+
+
+
