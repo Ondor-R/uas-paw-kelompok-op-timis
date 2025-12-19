@@ -51,7 +51,7 @@ Sesuai dengan spesifikasi kebutuhan sistem:
 ## 👨🏿‍🎨 Tim Pengembang
 | Name | NIM | Role | Github |
 |----------|----------|----------|----------|
-| Reyhan Oktavian Putra  | 123140202  | Team Leader | Ondor-R |
+| Reyhan Oktavian Putra  | 123140202  | Team Leader, Database | Ondor-R |
 | Muhammad Bimastiar  | 123140211  | Backend | 211-Bimas |
 | Fanisa Aulia Safitri | 123140121  | Backend | Applepi121 |
 | Refi Ikhsanti | 123140126 | Frontend | 7refi |
@@ -74,13 +74,13 @@ Sesuai dengan spesifikasi kebutuhan sistem:
 ### Dashboard with low stock alert
 <img width="2526" height="1256" alt="image" src="https://github.com/user-attachments/assets/cc281949-c08f-4c5c-a5c4-24faf2e55894" />
 
-### Manage Product
+### Manage Product (Create & Read Products)
 <img width="2540" height="1266" alt="image" src="https://github.com/user-attachments/assets/83ad2f91-fea1-4c44-9f52-f56a6e9210f6" />
 
-### Transactions
+### Transactions (Update & Delete Products)
 <img width="2542" height="1271" alt="image" src="https://github.com/user-attachments/assets/82e6b178-4a5f-4bef-8800-cde98f202051" />
 
-### Suppliers (admin only)
+### Suppliers (admin only, CRUD Suppliers)
 <img width="2540" height="1257" alt="image" src="https://github.com/user-attachments/assets/e13e1bbd-db50-43b1-882a-5c3a2a060d78" />
 
 ### Reports (admin only)
